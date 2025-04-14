@@ -37,8 +37,7 @@ dependencies {
 	// chat gpt 연동용 추가
 	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
-	implementation("io.github.cdimascio:dotenv-java:5.2.2") // dotenv-java 라이브러리 추가 .env 파일 위해서 (환경변수)
-
+	implementation("io.github.cdimascio:dotenv-java:3.2.0") // dotenv-java 라이브러리 추가 .env 파일 위해서 (환경변수)
 
 }
 
