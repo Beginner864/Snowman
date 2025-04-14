@@ -40,4 +40,4 @@ out/
 .kotlin
 
 # .env 파일 제외
-.env
+src/main/resources/.env
