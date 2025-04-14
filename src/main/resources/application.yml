@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/nun  # DB URL은 공개되어도 괜찮음
+    username: ${DB_USERNAME}  # 환경 변수로 DB 사용자명 설정
+    password: ${DB_PASSWORD}  # 환경 변수로 DB 비밀번호 설정
+    driver-class-name: oracle.jdbc.OracleDriver
