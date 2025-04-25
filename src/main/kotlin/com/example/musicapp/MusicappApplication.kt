@@ -9,10 +9,12 @@ class MusicappApplication
 
 fun main(args: Array<String>) {
 
-	// .env 파일이 spring에서 인식되지 않는 것을 해결하기 위함
-	val dotenv = Dotenv.configure().load()
-	dotenv.entries().forEach { entry ->
-		System.setProperty(entry.key, entry.value)
+	// Render 환경이 아니라면 .env를 불러와 시스템 변수에 등록
+	if (System.getenv("RENDER") == null) {
+		val dotenv = Dotenv.configure().load()
+		dotenv.entries().forEach { entry ->
+			System.setProperty(entry.key, entry.value)
+		}
 	}
 
 	// 실행부
