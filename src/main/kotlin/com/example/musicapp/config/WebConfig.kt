@@ -10,7 +10,7 @@ class WebConfig : WebMvcConfigurer {
     override fun addCorsMappings(registry: CorsRegistry) {
         // 모든 URL에 대해 CORS 설정
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost", "https://snowman-0yn3.onrender.com")  // 허용할 도메인
+            .allowedOrigins("http://localhost", "https://snowmanwal.onrender.com")  // 허용할 도메인
             .allowedMethods("GET", "POST", "PUT", "DELETE")  // 허용할 HTTP 메서드
             .allowedHeaders("*")  // 허용할 헤더
             .allowCredentials(true)  // 자격 증명(쿠키 등)을 허용할지 여부
