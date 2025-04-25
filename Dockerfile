@@ -12,7 +12,8 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # 빌드된 jar 파일 복사 (이름은 실제 jar 파일명으로)
-COPY build/libs/musicapp-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/build/libs/musicapp-0.0.1-SNAPSHOT.jar app.jar
+
 
 # 실행 명령어
 ENTRYPOINT ["java", "-jar", "app.jar"]
