@@ -1,6 +1,6 @@
 # 불필요
 .git
 .gradle
-build
+# build (render 서버에서 인식이 안 됨..)
 out
 
