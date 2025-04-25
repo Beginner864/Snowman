@@ -1,18 +1,17 @@
 package com.example.musicapp.service
 
 import org.springframework.stereotype.Service
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.client.RestTemplate
 import org.springframework.http.*
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.beans.factory.annotation.Value
 
 @Service
 class GptService {
 
     private val restTemplate = RestTemplate()
 
-    // AppConfig에서 주입된 API Key
-    @Autowired
+    @Value("\${openai.api-key}")
     private lateinit var apiKey: String
 
     fun extractMoodFromText(input: String): String {
