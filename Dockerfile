@@ -1,3 +1,10 @@
+# 1단계: Gradle로 JAR 빌드
+FROM gradle:8.4.0-jdk17 AS builder
+WORKDIR /app
+COPY . .
+RUN gradle build --no-daemon
+
+# 2단계: 빌드된 JAR로 실제 앱 실행
 # JDK 17 기반 슬림 이미지 사용
 FROM openjdk:17-jdk-slim
 
