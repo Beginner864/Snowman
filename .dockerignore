@@ -1,0 +1,6 @@
+# 불필요
+.git
+.gradle
+build
+out
+
