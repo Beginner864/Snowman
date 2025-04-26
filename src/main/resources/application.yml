@@ -3,7 +3,7 @@
 # 인데.. main() 부에서 직접 dotnev 관련설정을 해서 해결
 spring:
   datasource:
-    url: jdbc:oracle:thin:@//${DB_HOST}:${DB_PORT}/${DB_SERVICE_NAME}?ssl_server_dn_match=no
+    url: jdbc:oracle:thin:@tcps://${DB_HOST}:${DB_PORT}/${DB_SERVICE_NAME}?ssl_server_dn_match=no
     username: ${DB_USERNAME}  # 환경 변수로 DB 사용자명 설정
     password: ${DB_PASSWORD}  # 환경 변수로 DB 비밀번호 설정
     driver-class-name: oracle.jdbc.OracleDriver
