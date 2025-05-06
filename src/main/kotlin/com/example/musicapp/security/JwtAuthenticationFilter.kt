@@ -9,10 +9,12 @@ import org.springframework.web.filter.OncePerRequestFilter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 
 class JwtAuthenticationFilter : OncePerRequestFilter() {
 
-    private val secretKey = "your-secret-key"  // 비밀 키
+    @Value("\${jwt.secret}")
+    private lateinit var secretKey: String  // 비밀 키
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
         val token = request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }?.substring(7)

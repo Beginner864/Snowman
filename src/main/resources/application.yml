@@ -29,4 +29,7 @@ logging:
 openai:
   api-key: ${OPENAI_API_KEY}
 
+# 비밀 키 (로그인 관련)
+jwt:
+  secret: ${jwt.secret}
 
