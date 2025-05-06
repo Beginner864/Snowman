@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/auth")
 class AuthController(
     @Autowired private val userRepository: UserRepository,
-    @Autowired private val passwordEncoder: BCryptPasswordEncoder  // 암호화 처리 추가
+    @Autowired private val passwordEncoder: BCryptPasswordEncoder  // 비밀번호 암호화 추가
 ) {
 
     @PostMapping("/register")
@@ -38,5 +38,6 @@ class AuthController(
         return "Logged in successfully"
     }
 }
+
 
 

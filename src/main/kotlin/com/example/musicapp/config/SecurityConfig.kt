@@ -21,16 +21,27 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            // CSRF, Form login 등을 사용하지 않음
-            .addFilter(JwtAuthenticationFilter()) // JWT 필터만 추가
+            // JWT 필터 추가
+            .addFilter(JwtAuthenticationFilter())  // JWT 인증 필터 추가
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/login", "/register").permitAll()  // 로그인, 회원가입은 모두 허용
-                    .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
+                    .requestMatchers("/login", "/register").permitAll() // 로그인과 회원가입은 모두 허용
+                    .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
+            }
+            .formLogin { formLogin ->
+                formLogin
+                    .loginPage("/login") // 로그인 페이지
+                    .defaultSuccessUrl("/home", true) // 로그인 성공 후 이동할 페이지
+                    .permitAll() // 로그인 페이지는 모든 사용자에게 허용
+            }
+            .logout { logout ->
+                logout
+                    .permitAll() // 로그아웃은 모든 사용자에게 허용
             }
         return http.build()
     }
 
+    @Throws(Exception::class)
     @Bean
     fun authenticationManager(http: HttpSecurity): AuthenticationManager {
         val authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder::class.java)
@@ -40,9 +51,10 @@ class SecurityConfig(
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()  // 비밀번호 암호화
+        return BCryptPasswordEncoder() // 비밀번호 암호화
     }
 }
+
 
 
 
