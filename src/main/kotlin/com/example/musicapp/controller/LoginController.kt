@@ -16,7 +16,7 @@ import java.util.*
 @RestController
 class LoginController(
     private val userRepository: UserRepository,
-    private val passwordEncoder: BCryptPasswordEncoder  // 비밀번호 검증을 위한 BCryptPasswordEncoder
+    private val passwordEncoder: BCryptPasswordEncoder // 비밀번호 검증을 위한 BCryptPasswordEncoder
 ) {
 
     @Value("\${jwt.secret}")
@@ -54,5 +54,6 @@ class LoginController(
             .sign(Algorithm.HMAC256(secretKey))  // 비밀 키를 사용하여 서명
     }
 }
+
 
 

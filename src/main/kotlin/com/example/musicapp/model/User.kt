@@ -1,11 +1,9 @@
 package com.example.musicapp.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 @Entity
+@Table(name = "users")  // 테이블 이름을 users로 변경
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
