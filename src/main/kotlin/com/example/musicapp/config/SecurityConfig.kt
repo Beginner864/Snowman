@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -21,22 +22,13 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            // JWT 필터 추가
-            .addFilter(JwtAuthenticationFilter())  // JWT 인증 필터 추가
+            .csrf { csrf -> csrf.disable() }
+            // JWT 인증 필터 추가
+            .addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/login", "/register").permitAll() // 로그인과 회원가입은 모두 허용
                     .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
-            }
-            .formLogin { formLogin ->
-                formLogin
-                    .loginPage("/login") // 로그인 페이지
-                    .defaultSuccessUrl("/home", true) // 로그인 성공 후 이동할 페이지
-                    .permitAll() // 로그인 페이지는 모든 사용자에게 허용
-            }
-            .logout { logout ->
-                logout
-                    .permitAll() // 로그아웃은 모든 사용자에게 허용
             }
         return http.build()
     }
@@ -54,6 +46,7 @@ class SecurityConfig(
         return BCryptPasswordEncoder() // 비밀번호 암호화
     }
 }
+
 
 
 
