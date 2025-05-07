@@ -17,11 +17,18 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
     private lateinit var secretKey: String  // 비밀 키
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
+        // /auth/register 경로는 JWT 인증을 거치지 않도록 함
+        if (request.requestURI == "/auth/register") {
+            chain.doFilter(request, response)  // 인증 없이 필터 체인 실행
+            return
+        }
+
+        // Authorization 헤더에서 JWT 토큰 추출
         val token = request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }?.substring(7)
 
         if (token != null) {
             try {
-                // JWT 토큰 디코딩 및 검증
+                // JWT 토큰 검증
                 val algorithm = Algorithm.HMAC256(secretKey) // HMAC256 알고리즘 사용
                 val decodedJWT = JWT.require(algorithm) // 서명 검증을 위한 알고리즘 설정
                     .build()
@@ -36,12 +43,15 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
             } catch (e: Exception) {
                 // JWT 토큰 검증 실패 시 처리
+                logger.error("JWT validation failed: ${e.message}") // 에러 메시지 로그
                 SecurityContextHolder.clearContext() // 인증 실패 시 SecurityContext 초기화
             }
         }
 
-        chain.doFilter(request, response) // 필터 체인 실행
+        // 필터 체인 실행 (다음 필터로 요청을 전달)
+        chain.doFilter(request, response)
     }
 }
+
 
 
