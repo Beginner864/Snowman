@@ -2,6 +2,7 @@ package com.example.musicapp.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import jakarta.annotation.PostConstruct
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -15,6 +16,12 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
 
     @Value("\${jwt.secret}")
     private lateinit var secretKey: String  // 비밀 키
+
+    // 로그 확인 (비밀키)
+    @PostConstruct
+    fun init() {
+        println("JWT_SECRET: $secretKey")
+    }
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
