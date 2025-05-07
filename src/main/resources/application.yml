@@ -31,5 +31,5 @@ openai:
 
 # 비밀 키 (로그인 관련)
 jwt:
-  secret: ${jwt.secret}
+  secret: ${JWT_SECRET}
 

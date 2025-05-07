@@ -19,7 +19,7 @@ class LoginController(
     private val passwordEncoder: BCryptPasswordEncoder // 비밀번호 검증을 위한 BCryptPasswordEncoder
 ) {
 
-    @Value("\${jwt.secret}")
+    @Value("\${JWT_SECRET}")
     private lateinit var secretKey: String  // JWT 비밀 키
 
     // 로그인 요청 처리

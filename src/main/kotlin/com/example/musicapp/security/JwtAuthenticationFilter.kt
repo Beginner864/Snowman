@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Value
 
 class JwtAuthenticationFilter : OncePerRequestFilter() {
 
-    @Value("\${jwt.secret}")
+    @Value("\${JWT_SECRET}")
     private lateinit var secretKey: String  // 비밀 키
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
