@@ -24,7 +24,7 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { csrf -> csrf.disable() }
-            .addFilterBefore(JwtAuthenticationFilter(jwtProperties.secret), UsernamePasswordAuthenticationFilter::class.java)  // jwtProperties.secret 전달
+            .addFilterBefore(JwtAuthenticationFilter(jwtProperties.secret, customUserDetailsService), UsernamePasswordAuthenticationFilter::class.java)  // jwtProperties.secret 전달
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
                     .requestMatchers("/auth/register", "/auth/login").permitAll()

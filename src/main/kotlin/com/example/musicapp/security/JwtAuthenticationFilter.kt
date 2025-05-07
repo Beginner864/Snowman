@@ -2,21 +2,18 @@ package com.example.musicapp.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import jakarta.annotation.PostConstruct
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.web.filter.OncePerRequestFilter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.core.userdetails.UserDetailsService
 
-class JwtAuthenticationFilter(private val secretKey: String) : OncePerRequestFilter() {
-
-    @PostConstruct
-    fun init() {
-        println("JWT_SECRET: $secretKey")
-    }
+class JwtAuthenticationFilter(
+    private val secretKey: String,
+    private val userDetailsService: UserDetailsService
+) : OncePerRequestFilter() {
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
 
@@ -25,14 +22,18 @@ class JwtAuthenticationFilter(private val secretKey: String) : OncePerRequestFil
         if (token != null) {
             try {
                 val algorithm = Algorithm.HMAC256(secretKey)
-                val decodedJWT = JWT.require(algorithm)
-                    .build()
-                    .verify(token)
+                val decodedJWT = JWT.require(algorithm).build().verify(token)
 
                 val username = decodedJWT.subject
 
-                val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
-                val authentication = UsernamePasswordAuthenticationToken(username, null, authorities)
+                // ✅ 여기서 사용자 정보를 DB에서 조회
+                val userDetails = userDetailsService.loadUserByUsername(username)
+
+                val authentication = UsernamePasswordAuthenticationToken(
+                    userDetails,  // principal
+                    null,
+                    userDetails.authorities
+                )
                 SecurityContextHolder.getContext().authentication = authentication
 
             } catch (e: Exception) {
@@ -44,6 +45,7 @@ class JwtAuthenticationFilter(private val secretKey: String) : OncePerRequestFil
         chain.doFilter(request, response)
     }
 }
+
 
 
 
