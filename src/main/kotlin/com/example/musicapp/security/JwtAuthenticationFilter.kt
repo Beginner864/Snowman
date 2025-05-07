@@ -17,11 +17,6 @@ class JwtAuthenticationFilter : OncePerRequestFilter() {
     private lateinit var secretKey: String  // 비밀 키
 
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        // /auth/register 경로는 JWT 인증을 거치지 않도록 함
-        if (request.requestURI == "/auth/register") {
-            chain.doFilter(request, response)  // 인증 없이 필터 체인 실행
-            return
-        }
 
         // Authorization 헤더에서 JWT 토큰 추출
         val token = request.getHeader("Authorization")?.takeIf { it.startsWith("Bearer ") }?.substring(7)
