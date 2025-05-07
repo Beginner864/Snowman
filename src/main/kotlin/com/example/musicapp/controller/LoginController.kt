@@ -36,11 +36,15 @@ class LoginController(
                 // 로그인 성공 시 JWT 토큰 반환
                 return ResponseEntity.ok(mapOf("token" to token))
             }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password")
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                mapOf("error" to "Invalid password", "message" to "The password you entered is incorrect.")
+            )
         }
 
         // 사용자명이 존재하지 않으면 로그인 실패
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found")
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+            mapOf("error" to "User not found", "message" to "The user with the provided username does not exist.")
+        )
     }
 
     // JWT 토큰 생성 함수
