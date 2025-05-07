@@ -8,7 +8,6 @@ import jakarta.persistence.*
 data class Song(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "song_id", columnDefinition = "serial")
     val id: Long? = null,  // 노래 고유 ID
     var title: String,     // 노래 제목
     var artist: String,    // 아티스트 이름

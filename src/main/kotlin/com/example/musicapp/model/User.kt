@@ -7,7 +7,6 @@ import jakarta.persistence.*
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")  // USER_ID 컬럼을 명시적으로 지정
     val id: Long? = null,
     val username: String,
     var password: String,
