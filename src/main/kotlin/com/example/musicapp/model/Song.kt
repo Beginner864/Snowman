@@ -21,7 +21,7 @@ data class Song(
 
     // USER 테이블과의 관계 (외래 키)
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "users_id", referencedColumnName = "id", nullable = false)
     var user: User // user는 필수
 )
 

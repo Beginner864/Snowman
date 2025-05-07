@@ -2,21 +2,31 @@ package com.example.musicapp.controller
 
 import com.example.musicapp.model.Song
 import com.example.musicapp.repository.SongRepository
+import com.example.musicapp.repository.UserRepository
+import com.example.musicapp.security.SecurityUtil
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/songs")
 class SongController(
     private val songRepository: SongRepository,
-
+    private val userRepository: UserRepository  // UserRepository 추가
 ) {
 
     @PostMapping
     fun addSong(@RequestBody song: Song): Song {
-        // Song 생성 시 user는 필수이므로, user가 null일 경우 예외 처리
-        song.user?.let {
-            return songRepository.save(song)
-        } ?: throw IllegalArgumentException("User must be provided")
+        // 로그인한 사용자 ID를 가져오기
+        val currentUserId = SecurityUtil.getCurrentUserId()
+
+        // 현재 사용자의 정보를 UserRepository에서 가져오기
+        val user = userRepository.findById(currentUserId)
+            .orElseThrow { RuntimeException("User not found") }  // 사용자 찾기 실패 시 예외 발생
+
+        // Song 객체에 user 정보 할당
+        song.user = user
+
+        // Song 저장
+        return songRepository.save(song)
     }
 
     @GetMapping
@@ -51,6 +61,9 @@ class SongController(
         songRepository.deleteById(id)
     }
 }
+
+
+
 
 
 
