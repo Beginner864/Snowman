@@ -37,7 +37,8 @@ class SongController(
 
     @GetMapping("/mood/{mood}")
     fun getSongsByMood(@PathVariable mood: String): List<Song> {
-        return songRepository.findByMood(mood)
+        val currentUserId = SecurityUtil.getCurrentUserId()
+        return songRepository.findByMoodAndUserId(mood, currentUserId)  // 사용자별 기분에 맞는 노래만 조회
     }
 
     @PutMapping("/{id}")

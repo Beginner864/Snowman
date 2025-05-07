@@ -15,6 +15,9 @@ interface SongRepository : JpaRepository<Song, Long> {
     // userId를 기반으로 노래 조회
     @Query("SELECT s FROM Song s WHERE s.user.id = :userId")
     fun findByUserId(userId: Long): List<Song>
+
+    // 기분과 사용자 ID를 바탕으로 노래 조회
+    fun findByMoodAndUserId(mood: String, userId: Long): List<Song>
 }
 
 
