@@ -1,21 +1,24 @@
 package com.example.musicapp.service
 
+import com.example.musicapp.model.User
 import com.example.musicapp.repository.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.core.userdetails.User
+import com.example.musicapp.security.CustomUserDetails
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 
 @Service
-class CustomUserDetailsService : UserDetailsService {
-    @Autowired
-    lateinit var userRepository: UserRepository
+class CustomUserDetailsService(private val userRepository: UserRepository) : UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findByUsername(username)
+        // User가 존재하지 않으면 예외 발생
+        val appUser = userRepository.findByUsername(username)
             ?: throw UsernameNotFoundException("User not found")
-        return User(user.username, user.password, emptyList())
+
+        return CustomUserDetails(appUser)  // CustomUserDetails 객체 반환
     }
 }
+
+
+

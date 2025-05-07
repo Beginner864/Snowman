@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/songs")
 class SongController(
     private val songRepository: SongRepository,
-    private val userRepository: UserRepository  // UserRepository 추가
+    private val userRepository: UserRepository
 ) {
 
     @PostMapping
@@ -31,7 +31,8 @@ class SongController(
 
     @GetMapping
     fun getAllSongs(): List<Song> {
-        return songRepository.findAll()
+        val currentUserId = SecurityUtil.getCurrentUserId()
+        return songRepository.findByUserId(currentUserId)  // 로그인한 사용자의 노래만 조회
     }
 
     @GetMapping("/mood/{mood}")
@@ -41,18 +42,15 @@ class SongController(
 
     @PutMapping("/{id}")
     fun updateSong(@PathVariable id: Long, @RequestBody song: Song): Song {
-        // 기존 노래 조회
         val existingSong = songRepository.findById(id).orElseThrow { RuntimeException("Song not found") }
 
-        // 노래 정보 수정
         existingSong.title = song.title
         existingSong.artist = song.artist
         existingSong.genre = song.genre
         existingSong.mood = song.mood
         existingSong.streamingUrl = song.streamingUrl
-        existingSong.user = song.user // user 업데이트
+        existingSong.user = song.user  // user 업데이트
 
-        // 수정된 노래 저장
         return songRepository.save(existingSong)
     }
 
@@ -61,6 +59,7 @@ class SongController(
         songRepository.deleteById(id)
     }
 }
+
 
 
 
