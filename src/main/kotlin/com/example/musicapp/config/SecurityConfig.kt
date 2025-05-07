@@ -27,7 +27,7 @@ class SecurityConfig(
             .addFilterBefore(JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/login", "/register").permitAll() // 로그인과 회원가입은 모두 허용
+                    .requestMatchers("/auth/register", "/auth/login").permitAll() // 로그인과 회원가입은 모두 허용
                     .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
             }
         return http.build()
