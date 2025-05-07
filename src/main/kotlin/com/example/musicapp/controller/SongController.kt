@@ -6,11 +6,17 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/songs")
-class SongController(private val songRepository: SongRepository) {
+class SongController(
+    private val songRepository: SongRepository,
+
+) {
 
     @PostMapping
     fun addSong(@RequestBody song: Song): Song {
-        return songRepository.save(song)
+        // Song 생성 시 user는 필수이므로, user가 null일 경우 예외 처리
+        song.user?.let {
+            return songRepository.save(song)
+        } ?: throw IllegalArgumentException("User must be provided")
     }
 
     @GetMapping
@@ -34,14 +40,17 @@ class SongController(private val songRepository: SongRepository) {
         existingSong.genre = song.genre
         existingSong.mood = song.mood
         existingSong.streamingUrl = song.streamingUrl
+        existingSong.user = song.user // user 업데이트
 
         // 수정된 노래 저장
         return songRepository.save(existingSong)
     }
-
 
     @DeleteMapping("/{id}")
     fun deleteSong(@PathVariable id: Long) {
         songRepository.deleteById(id)
     }
 }
+
+
+

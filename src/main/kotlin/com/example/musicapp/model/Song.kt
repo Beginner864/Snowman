@@ -1,11 +1,7 @@
 package com.example.musicapp.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 
 
 @Entity
@@ -21,7 +17,12 @@ data class Song(
 
     @Column(name = "streaming_url")
     @JsonProperty("streaming_url")
-    var streamingUrl: String // url
+    var streamingUrl: String, // url
+
+    // USER 테이블과의 관계 (외래 키)
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    var user: User // user는 필수
 )
 
 

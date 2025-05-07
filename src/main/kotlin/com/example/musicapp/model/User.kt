@@ -10,5 +10,9 @@ data class User(
     val id: Long? = null,
     val username: String,
     var password: String,
+
+    // USER가 여러 개의 SONG을 가질 수 있음 (1:N 관계)
+    @OneToMany(mappedBy = "user")
+    val songs: List<Song> = emptyList() // 여러 개의 Song을 가지고 있을 수 있음
 )
 
