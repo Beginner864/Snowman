@@ -1,7 +1,6 @@
 package com.example.musicapp.security
 
 import org.springframework.security.core.context.SecurityContextHolder
-import com.example.musicapp.security.CustomUserDetails
 
 object SecurityUtil {
 

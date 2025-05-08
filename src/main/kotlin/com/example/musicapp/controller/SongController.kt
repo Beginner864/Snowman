@@ -4,6 +4,7 @@ import com.example.musicapp.model.Song
 import com.example.musicapp.repository.SongRepository
 import com.example.musicapp.repository.UserRepository
 import com.example.musicapp.security.SecurityUtil
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -13,6 +14,7 @@ class SongController(
     private val userRepository: UserRepository
 ) {
 
+    @Transactional
     @PostMapping
     fun addSong(@RequestBody song: Song): Song {
         // 로그인한 사용자 ID를 가져오기
@@ -46,6 +48,7 @@ class SongController(
         return songRepository.findByMoodAndUserId(mood, currentUserId)  // 사용자별 기분에 맞는 노래만 조회
     }
 
+    @Transactional
     @PutMapping("/{id}")
     fun updateSong(@PathVariable id: Long, @RequestBody song: Song): Song {
         val existingSong = songRepository.findById(id).orElseThrow { RuntimeException("Song not found") }
