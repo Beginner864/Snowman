@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface SongRepository : JpaRepository<Song, Long> {
 
-    // mood를 기반으로 노래 조회
+    // mood를 기반으로 노래 조회 (현재 사용x)
     @Query("SELECT s FROM Song s WHERE LOWER(s.mood) = LOWER(:mood)")
     fun findByMood(mood: String): List<Song>
 
@@ -16,7 +16,7 @@ interface SongRepository : JpaRepository<Song, Long> {
     @Query("SELECT s FROM Song s WHERE s.user.id = :userId")
     fun findByUserId(userId: Long): List<Song>
 
-    // 기분과 사용자 ID를 바탕으로 노래 조회
+    // 기분과 사용자 ID를 바탕으로 노래 조회 (프론트 엔드에서는 사용x)
     fun findByMoodAndUserId(mood: String, userId: Long): List<Song>
 }
 

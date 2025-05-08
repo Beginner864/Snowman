@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : JpaRepository<User, Long> {
-    // JpaRepository에 기본적으로 findById가 제공됨
+    // username을 기준으로 User를 조회하는 메서드 정의
+    fun findByUsername(username: String): User?
 }

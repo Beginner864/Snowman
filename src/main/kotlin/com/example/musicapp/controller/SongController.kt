@@ -18,12 +18,15 @@ class SongController(
         // 로그인한 사용자 ID를 가져오기
         val currentUserId = SecurityUtil.getCurrentUserId()
 
-        // 현재 사용자의 정보를 UserRepository에서 가져오기
-        val user = userRepository.findById(currentUserId)
-            .orElseThrow { RuntimeException("User not found") }  // 사용자 찾기 실패 시 예외 발생
+        // currentUserId가 유효한지 확인하기
+        println("Current User ID: $currentUserId")
 
-        // Song 객체에 user 정보 할당
-        song.user = user  // user 객체를 할당하면 자동으로 user_id가 설정됩니다.
+        // UserRepository에서 User 객체를 ID로 조회
+        val user = userRepository.findById(currentUserId)
+            .orElseThrow { RuntimeException("User not found") }  // User가 없으면 예외 발생
+
+        // Song 객체에 실제 User 정보 할당
+        song.user = user  // User 객체를 할당하면 user_id가 자동으로 설정됨
 
         // Song 저장
         return songRepository.save(song)
