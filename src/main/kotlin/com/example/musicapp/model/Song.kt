@@ -22,7 +22,6 @@ data class Song(
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     @JsonBackReference  // 순환 참조 방지: Song -> User 방향에서만 직렬화됨
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  // 직렬화에서 제외
     var user: User // user는 필수
 )
 
