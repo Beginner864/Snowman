@@ -1,5 +1,6 @@
 package com.example.musicapp.controller
 
+import com.example.musicapp.model.MoodRequest
 import com.example.musicapp.model.Song
 import com.example.musicapp.repository.SongRepository
 import com.example.musicapp.service.GptService
@@ -7,7 +8,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
-data class MoodRequest(val input: String)
 
 @RestController
 @RequestMapping("/recommend")
@@ -26,7 +26,7 @@ class RecommendationController(
         // GPT 서비스에서 기분 추출
         val extractedMood = gptService.extractMoodFromText(request.input)
 
-        if (extractedMood.isNullOrEmpty()) {
+        if (extractedMood.isEmpty()) {
             // 400 Bad Request: 기분 추출 실패 시
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "유효한 기분을 추출할 수 없습니다.")
         }
