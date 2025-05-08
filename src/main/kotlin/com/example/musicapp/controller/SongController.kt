@@ -45,12 +45,20 @@ class SongController(
     fun updateSong(@PathVariable id: Long, @RequestBody song: Song): Song {
         val existingSong = songRepository.findById(id).orElseThrow { RuntimeException("Song not found") }
 
+        // 사용자 정보는 클라이언트에서 전달하지 않더라도 서버에서 자동으로 설정
+        val currentUserId = SecurityUtil.getCurrentUserId()
+        val user = userRepository.findById(currentUserId)
+            .orElseThrow { RuntimeException("User not found") }
+
+        // Song 객체에 user 정보 할당
+        existingSong.user = user
+
+        // 나머지 필드 업데이트
         existingSong.title = song.title
         existingSong.artist = song.artist
         existingSong.genre = song.genre
         existingSong.mood = song.mood
         existingSong.streamingUrl = song.streamingUrl
-        existingSong.user = song.user  // user 업데이트
 
         return songRepository.save(existingSong)
     }
@@ -60,6 +68,7 @@ class SongController(
         songRepository.deleteById(id)
     }
 }
+
 
 
 
