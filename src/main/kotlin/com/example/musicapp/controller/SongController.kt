@@ -23,11 +23,13 @@ class SongController(
             .orElseThrow { RuntimeException("User not found") }  // 사용자 찾기 실패 시 예외 발생
 
         // Song 객체에 user 정보 할당
-        song.user = user
+        song.user = user  // user 객체를 할당하면 자동으로 user_id가 설정됩니다.
 
         // Song 저장
         return songRepository.save(song)
     }
+
+
 
     @GetMapping
     fun getAllSongs(): List<Song> {
