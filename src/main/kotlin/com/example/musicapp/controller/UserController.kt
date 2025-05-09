@@ -1,5 +1,6 @@
 package com.example.musicapp.controller
 
+import com.example.musicapp.model.ResignRequest
 import com.example.musicapp.model.ResponseMessage
 import com.example.musicapp.service.UserService
 import org.springframework.http.HttpStatus
@@ -10,12 +11,12 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/auth")
 class UserController(private val userService: UserService) {
 
-    // 비밀번호를 본문에서 받음
+    // 비밀번호를 ResignRequest 객체로 받음
     @DeleteMapping("/delete")
-    fun deleteAccount(@RequestBody password: String): ResponseEntity<ResponseMessage> {
+    fun deleteAccount(@RequestBody resignRequest: ResignRequest): ResponseEntity<ResponseMessage> {
         return try {
             // 회원탈퇴 처리
-            val message = userService.deleteUser(password)
+            val message = userService.deleteUser(resignRequest.password)
 
             // 성공 메시지 반환
             val response = ResponseMessage(status = "success", message = message)
@@ -27,6 +28,7 @@ class UserController(private val userService: UserService) {
         }
     }
 }
+
 
 
 
