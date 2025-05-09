@@ -1,5 +1,6 @@
 package com.example.musicapp.controller
 
+import com.example.musicapp.model.FindIdRequest
 import com.example.musicapp.model.ResignRequest
 import com.example.musicapp.model.ResponseMessage
 import com.example.musicapp.service.UserService
@@ -13,8 +14,8 @@ class UserController(private val userService: UserService) {
 
     // 아이디 찾기 기능
     @PostMapping("/find-username")
-    fun findUsername(@RequestBody email: String): ResponseEntity<ResponseMessage> {
-        val user = userService.findUsernameByEmail(email)
+    fun findUsername(@RequestBody findIdRequest: FindIdRequest): ResponseEntity<ResponseMessage> {
+        val user = userService.findUsernameByEmail(findIdRequest.email)
 
         return if (user != null) {
             val response = ResponseMessage(status = "success", message = "Your username is: ${user.username}")
@@ -24,6 +25,7 @@ class UserController(private val userService: UserService) {
             ResponseEntity(response, HttpStatus.BAD_REQUEST)
         }
     }
+
 
     // 비밀번호를 ResignRequest 객체로 받음
     @PostMapping("/delete") // 원래는 @DeleteMapping이 였다.. (앱에서 @DELETE는 본문 추가가 안 되네..)

@@ -40,6 +40,7 @@ class UserService @Autowired constructor(
     fun findUsernameByEmail(email: String): User? {
         return userRepository.findByEmail(email)
     }
+
 }
 
 
