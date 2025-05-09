@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     // 비밀번호를 ResignRequest 객체로 받음
-    @PostMapping("/delete")
+    @PostMapping("/delete") // 원래는 @DeleteMapping이 였다.. (앱에서 @DELETE는 본문 추가가 안 되네..)
     fun deleteAccount(@RequestBody resignRequest: ResignRequest): ResponseEntity<ResponseMessage> {
         return try {
             // 회원탈퇴 처리

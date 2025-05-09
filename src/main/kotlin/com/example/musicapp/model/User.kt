@@ -11,6 +11,7 @@ data class User(
     val id: Long? = null,
     val username: String,
     var password: String,
+    var email: String,  // 이메일 추가
 
     // USER가 여러 개의 SONG을 가질 수 있음 (1:N 관계)
     @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])

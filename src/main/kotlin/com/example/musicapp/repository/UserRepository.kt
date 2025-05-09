@@ -12,4 +12,7 @@ interface UserRepository : JpaRepository<User, Long> {
 
     // ID를 기준으로 User를 조회하는 메서드를 명시적으로 추가
     override fun findById(id: Long): Optional<User>
+
+    // 이메일을 기준으로 User 조회
+    fun findByEmail(email: String): User?  // 이메일로 찾는 메서드 추가
 }
