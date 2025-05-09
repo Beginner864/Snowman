@@ -13,7 +13,7 @@ data class User(
     var password: String,
 
     // USER가 여러 개의 SONG을 가질 수 있음 (1:N 관계)
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.REMOVE])
     @JsonManagedReference  // 순환 참조 방지: User -> Song 방향에서만 직렬화됨
     val songs: List<Song> = emptyList() // 여러 개의 Song을 가지고 있을 수 있음
 )
