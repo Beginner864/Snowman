@@ -10,7 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Service
 class UserService @Autowired constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    @Autowired private val passwordResetService: PasswordResetService,
+    @Autowired private val emailService: EmailService
 ) {
 
     private val passwordEncoder = BCryptPasswordEncoder() // 암호화된 비밀번호 비교를 위한 인코더
@@ -35,12 +37,26 @@ class UserService @Autowired constructor(
         }
     }
 
-
     // 이메일로 사용자 조회 (아이디 찾기 기능)
     fun findUsernameByEmail(email: String): User? {
         return userRepository.findByEmail(email)
     }
 
+
+    // 사용자 이메일로 비밀번호 재설정 링크 전송
+    fun sendPasswordResetLinkToEmail(username: String): String {
+        val user = userRepository.findByUsername(username)
+            ?: return "User not found"  // 사용자가 없으면 에러 메시지 반환
+
+        // 비밀번호 재설정 토큰 생성
+        val token = passwordResetService.createPasswordResetToken(user)
+
+        // 이메일로 비밀번호 재설정 링크 전송
+        emailService.sendPasswordResetEmail(user.email, token)
+
+        return "Password reset link has been sent to your email."
+    }
 }
+
 
 

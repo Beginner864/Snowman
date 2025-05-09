@@ -17,6 +17,24 @@ spring:
     show-sql: true  # ★ SQL 쿼리 출력
     open-in-view: false  # ★ 뷰 렌더링 중 데이터베이스 쿼리 실행을 방지
 
+  # 비밀번호 찾기 메일 보내기
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  # 비밀번호 바꾸는 토큰 주기적으로 삭제위해
+  task:
+    scheduling:
+      pool:
+        size: 5  # 스케줄러 스레드 풀 크기
+
+
 # Spring Boot는 기본적으로는 INFO로 처리한다고 한다
 logging:
   level:

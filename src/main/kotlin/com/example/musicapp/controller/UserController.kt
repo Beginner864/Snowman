@@ -1,6 +1,7 @@
 package com.example.musicapp.controller
 
 import com.example.musicapp.model.FindIdRequest
+import com.example.musicapp.model.FindPWRequest
 import com.example.musicapp.model.ResignRequest
 import com.example.musicapp.model.ResponseMessage
 import com.example.musicapp.service.UserService
@@ -25,6 +26,14 @@ class UserController(private val userService: UserService) {
             ResponseEntity(response, HttpStatus.BAD_REQUEST)
         }
     }
+
+    // 비밀번호 찾기 기능
+    @PostMapping("/forgot-password")
+    fun forgotPassword(@RequestBody findPWRequest: FindPWRequest): ResponseEntity<String> {
+        val result = userService.sendPasswordResetLinkToEmail(findPWRequest.username)
+        return ResponseEntity.ok(result)  // 이메일 전송 결과 반환
+    }
+
 
 
     // 비밀번호를 ResignRequest 객체로 받음
