@@ -64,9 +64,10 @@ class SongController(
         // 현재 로그인한 사용자의 ID를 SecurityUtil을 통해 가져옵니다.
         val currentUserId = SecurityUtil.getCurrentUserId()
 
-        // 유효한 사용자 찾기
-        val user = userRepository.findById(currentUserId)
-            .orElseThrow { RuntimeException("User not found") }
+        // 수정하려는 노래의 사용자가 현재 로그인한 사용자와 일치하는지 확인
+        if (existingSong.user.id != currentUserId) {
+            throw RuntimeException("You are not authorized to modify this song")
+        }
 
         // 기존 Song 정보 수정
         existingSong.title = songRequest.title
@@ -74,12 +75,12 @@ class SongController(
         existingSong.genre = songRequest.genre
         existingSong.mood = songRequest.mood
         existingSong.streamingUrl = songRequest.streamingUrl
-        existingSong.user = user // 현재 로그인한 사용자와 연결
 
         // 수정된 Song 저장
         val updatedSong = songRepository.save(existingSong)
         return ResponseEntity.ok(updatedSong)
     }
+
 
 
 
