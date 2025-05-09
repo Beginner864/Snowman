@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/auth")
 class UserController(private val userService: UserService) {
 
+    // 비밀번호를 쿼리 파라미터로 받음
     @DeleteMapping("/delete")
-    fun deleteAccount(@RequestBody password: String): ResponseEntity<ResponseMessage> {
+    fun deleteAccount(@RequestParam password: String): ResponseEntity<ResponseMessage> {
         return try {
             // 회원탈퇴 처리
             val message = userService.deleteUser(password)
@@ -26,6 +27,7 @@ class UserController(private val userService: UserService) {
         }
     }
 }
+
 
 
 
