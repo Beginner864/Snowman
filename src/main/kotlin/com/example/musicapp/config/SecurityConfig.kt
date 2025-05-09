@@ -27,7 +27,7 @@ class SecurityConfig(
             .addFilterBefore(JwtAuthenticationFilter(jwtProperties.secret, customUserDetailsService), UsernamePasswordAuthenticationFilter::class.java)  // jwtProperties.secret 전달
             .authorizeHttpRequests { authorizeRequests ->
                 authorizeRequests
-                    .requestMatchers("/auth/register", "/auth/login").permitAll()
+                    .requestMatchers("/auth/register", "/auth/login", "/auth/find-username").permitAll()
                     .anyRequest().authenticated()
             }
         return http.build()

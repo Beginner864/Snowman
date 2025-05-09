@@ -10,13 +10,12 @@ spring:
   hikari:
     maximum-pool-size: 10
 
+
   jpa:
     hibernate:
-      ddl-auto: update   # ★ 테이블 자동 생성/업데이트
-    show-sql: true        # ★ SQL 쿼리 출력
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.OracleDialect # ★ 오라클용 방언 설정
+      ddl-auto: update  # ★ 테이블 자동 생성/업데이트
+    show-sql: true  # ★ SQL 쿼리 출력
+    open-in-view: false  # ★ 뷰 렌더링 중 데이터베이스 쿼리 실행을 방지
 
 # Spring Boot는 기본적으로는 INFO로 처리한다고 한다
 logging:
@@ -24,10 +23,10 @@ logging:
     root: INFO
 
 
-
 # 챗지피티 관련
 openai:
   api-key: ${OPENAI_API_KEY}
+
 
 # 비밀 키 (로그인 관련)
 jwt:
