@@ -17,8 +17,11 @@ class SongController(
 
     @PostMapping
     fun addSong(@RequestBody songRequest: SongRequest): ResponseEntity<Song> {
+        // 현재 로그인한 사용자의 ID를 SecurityUtil을 통해 가져옵니다.
+        val currentUserId = SecurityUtil.getCurrentUserId()
+
         // 유효한 사용자 찾기
-        val user = userRepository.findById(songRequest.userId)
+        val user = userRepository.findById(currentUserId)
             .orElseThrow { RuntimeException("User not found") }
 
         // Song 객체 생성
@@ -28,13 +31,15 @@ class SongController(
             genre = songRequest.genre,
             mood = songRequest.mood,
             streamingUrl = songRequest.streamingUrl,
-            user = user // 사용자 연결
+            user = user // 현재 로그인한 사용자와 연결
         )
 
         // 저장
         val savedSong = songRepository.save(song)
         return ResponseEntity.ok(savedSong)
     }
+
+
 
 
     @GetMapping
@@ -49,18 +54,27 @@ class SongController(
         return songRepository.findByMoodAndUserId(mood, currentUserId)  // 사용자별 기분에 맞는 노래만 조회
     }
 
+
     @PutMapping("/{id}")
     fun updateSong(@PathVariable id: Long, @RequestBody songRequest: SongRequest): ResponseEntity<Song> {
         // 기존 노래 찾기
         val existingSong = songRepository.findById(id)
             .orElseThrow { RuntimeException("Song not found") }
 
-        // 기존 노래 정보 수정
+        // 현재 로그인한 사용자의 ID를 SecurityUtil을 통해 가져옵니다.
+        val currentUserId = SecurityUtil.getCurrentUserId()
+
+        // 유효한 사용자 찾기
+        val user = userRepository.findById(currentUserId)
+            .orElseThrow { RuntimeException("User not found") }
+
+        // 기존 Song 정보 수정
         existingSong.title = songRequest.title
         existingSong.artist = songRequest.artist
         existingSong.genre = songRequest.genre
         existingSong.mood = songRequest.mood
         existingSong.streamingUrl = songRequest.streamingUrl
+        existingSong.user = user // 현재 로그인한 사용자와 연결
 
         // 수정된 Song 저장
         val updatedSong = songRepository.save(existingSong)
