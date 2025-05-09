@@ -25,6 +25,7 @@ class UserService @Autowired constructor(
 
         // 비밀번호 확인 (암호화된 비밀번호 비교)
         if (!passwordEncoder.matches(password, user.password)) {
+            println("비밀번호 비교 실패: 입력된 비밀번호 = $password, 저장된 비밀번호 = ${user.password}")
             throw RuntimeException("Incorrect password")
         }
 
