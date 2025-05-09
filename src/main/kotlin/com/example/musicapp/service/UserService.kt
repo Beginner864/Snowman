@@ -1,5 +1,6 @@
 package com.example.musicapp.service
 
+import com.example.musicapp.model.User
 import com.example.musicapp.repository.UserRepository
 import com.example.musicapp.security.SecurityUtil
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +33,12 @@ class UserService @Autowired constructor(
             println("비밀번호 비교 실패: 입력된 비밀번호 = $password, 저장된 비밀번호 = ${user.password}")
             throw RuntimeException("Incorrect password")
         }
+    }
 
+
+    // 이메일로 사용자 조회 (아이디 찾기 기능)
+    fun findUsernameByEmail(email: String): User? {
+        return userRepository.findByEmail(email)
     }
 }
 

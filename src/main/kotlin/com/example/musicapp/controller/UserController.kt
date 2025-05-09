@@ -11,6 +11,20 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/auth")
 class UserController(private val userService: UserService) {
 
+    // 아이디 찾기 기능
+    @PostMapping("/find-username")
+    fun findUsername(@RequestBody email: String): ResponseEntity<ResponseMessage> {
+        val user = userService.findUsernameByEmail(email)
+
+        return if (user != null) {
+            val response = ResponseMessage(status = "success", message = "Your username is: ${user.username}")
+            ResponseEntity(response, HttpStatus.OK)
+        } else {
+            val response = ResponseMessage(status = "error", message = "Email not found")
+            ResponseEntity(response, HttpStatus.BAD_REQUEST)
+        }
+    }
+
     // 비밀번호를 ResignRequest 객체로 받음
     @PostMapping("/delete") // 원래는 @DeleteMapping이 였다.. (앱에서 @DELETE는 본문 추가가 안 되네..)
     fun deleteAccount(@RequestBody resignRequest: ResignRequest): ResponseEntity<ResponseMessage> {
