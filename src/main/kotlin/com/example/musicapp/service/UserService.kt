@@ -24,15 +24,15 @@ class UserService @Autowired constructor(
             .orElseThrow { RuntimeException("User not found") }
 
         // 비밀번호 확인 (암호화된 비밀번호 비교)
-        if (!passwordEncoder.matches(password, user.password)) {
+        if (passwordEncoder.matches(password, user.password)) {
+            // 비밀번호가 일치하는 경우 사용자 삭제
+            userRepository.delete(user)
+            return "회원탈퇴가 완료되었습니다."
+        } else {
             println("비밀번호 비교 실패: 입력된 비밀번호 = $password, 저장된 비밀번호 = ${user.password}")
             throw RuntimeException("Incorrect password")
         }
 
-        // 사용자 삭제
-        userRepository.delete(user)
-
-        return "회원탈퇴가 완료되었습니다."
     }
 }
 
