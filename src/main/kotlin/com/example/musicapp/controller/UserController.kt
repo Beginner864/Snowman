@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 class UserController(private val userService: UserService) {
 
     // 비밀번호를 ResignRequest 객체로 받음
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     fun deleteAccount(@RequestBody resignRequest: ResignRequest): ResponseEntity<ResponseMessage> {
         return try {
             // 회원탈퇴 처리
