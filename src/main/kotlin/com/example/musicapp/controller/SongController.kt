@@ -15,7 +15,7 @@ class SongController(
     private val userRepository: UserRepository
 ) {
 
-    @PostMapping("/songs")
+    @PostMapping
     fun addSong(@RequestBody songRequest: SongRequest): ResponseEntity<Song> {
         // 유효한 사용자 찾기
         val user = userRepository.findById(songRequest.userId)
