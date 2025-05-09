@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class EmailService(private val javaMailSender: JavaMailSender) {
 
-    // 비밀번호 재설정 이메일 전송
+    // 비밀번호 재설정 이메일 전송 (내 서버이용)
     fun sendPasswordResetEmail(to: String, token: String) {
         val resetUrl = "https://snowmanwal.onrender.com/reset-password?token=$token"  // 비밀번호 재설정 링크
         val subject = "Password Reset Request"
