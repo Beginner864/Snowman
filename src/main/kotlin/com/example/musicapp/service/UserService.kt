@@ -5,11 +5,14 @@ import com.example.musicapp.security.SecurityUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Service
 class UserService @Autowired constructor(
     private val userRepository: UserRepository
 ) {
+
+    private val passwordEncoder = BCryptPasswordEncoder() // 암호화된 비밀번호 비교를 위한 인코더
 
     @Transactional
     fun deleteUser(password: String): String {
@@ -20,8 +23,8 @@ class UserService @Autowired constructor(
         val user = userRepository.findById(currentUserId)
             .orElseThrow { RuntimeException("User not found") }
 
-        // 비밀번호 확인
-        if (user.password != password) {
+        // 비밀번호 확인 (암호화된 비밀번호 비교)
+        if (!passwordEncoder.matches(password, user.password)) {
             throw RuntimeException("Incorrect password")
         }
 
