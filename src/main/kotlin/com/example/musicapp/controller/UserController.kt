@@ -29,9 +29,9 @@ class UserController(private val userService: UserService) {
 
     // 비밀번호 찾기 기능
     @PostMapping("/forgot-password")
-    fun forgotPassword(@RequestBody findPWRequest: FindPWRequest): ResponseEntity<String> {
-        val result = userService.sendPasswordResetLinkToEmail(findPWRequest.username)
-        return ResponseEntity.ok(result)  // 이메일 전송 결과 반환
+    fun forgotPassword(@RequestBody findPWRequest: FindPWRequest): ResponseEntity<ResponseMessage> {
+        // 이메일 전송 결과 반환 (ResponseEntity<ResponseMessage> 반환)
+        return userService.sendPasswordResetLinkToEmail(findPWRequest.username)
     }
 
 
