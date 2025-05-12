@@ -28,7 +28,7 @@ class UserController(private val userService: UserService) {
         }
     }
 
-    // 비밀번호 찾기 기능
+    // 비밀번호를 잊었을 때 기능
     @PostMapping("/forgot-password")
     fun forgotPassword(@RequestBody findPWRequest: FindPWRequest): ResponseEntity<ResponseMessage> {
         return try {
