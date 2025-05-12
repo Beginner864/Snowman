@@ -44,6 +44,7 @@ dependencies {
 
 	// 비밀번호 찾기 (메일 기능 추가)
 	implementation ("org.springframework.boot:spring-boot-starter-mail")
+
 }
 
 kotlin {

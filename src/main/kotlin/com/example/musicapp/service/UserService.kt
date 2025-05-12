@@ -1,6 +1,5 @@
 package com.example.musicapp.service
 
-
 import com.example.musicapp.model.User
 import com.example.musicapp.repository.UserRepository
 import com.example.musicapp.security.SecurityUtil
@@ -59,7 +58,6 @@ class UserService @Autowired constructor(
 
         return "Password reset link has been sent to your email."
     }
-
 
 }
 
