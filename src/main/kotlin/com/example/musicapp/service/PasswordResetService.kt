@@ -1,20 +1,25 @@
 package com.example.musicapp.service
 
 import com.example.musicapp.model.PasswordResetToken
+import com.example.musicapp.model.ResponseMessage
 import com.example.musicapp.model.User
 import com.example.musicapp.repository.PasswordResetTokenRepository
 import com.example.musicapp.repository.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 @Service
 class PasswordResetService(
-    @Autowired private val passwordResetTokenRepository: PasswordResetTokenRepository,
-    @Autowired private val userRepository: UserRepository
+    // 생성자 주입은 @Autowired 생략해도 됨
+    private val passwordResetTokenRepository: PasswordResetTokenRepository,
+    private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     // 비밀번호 재설정 토큰 생성
@@ -65,10 +70,42 @@ class PasswordResetService(
     // 주기적으로 만료된 토큰 삭제
     @Scheduled(fixedRate = 3600000)  // 1시간(3600000ms)마다 실행
     fun deleteExpiredTokens() {
-        val expirationTime = LocalDateTime.now().minusMinutes(30)  // 30분 전에 생성된 토큰 삭제
-        val expiredTokens = passwordResetTokenRepository.findAllByCreatedDateBefore(expirationTime)
-        expiredTokens.forEach { passwordResetTokenRepository.delete(it) }
+        // ZonedDateTime을 사용하여 시간대를 명시적으로 지정 (Asia/Seoul)
+        val expirationTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).minusMinutes(30)
+
+        // 30분 전에 생성된 토큰들을 가져옵니다.
+        val expiredTokens = passwordResetTokenRepository.findAllByCreatedDateBefore(expirationTime.toLocalDateTime())
+
+        // 만료된 토큰들을 100개씩 배치 처리
+        expiredTokens.take(100).forEach {
+            passwordResetTokenRepository.delete(it)  // 삭제
+        }
+
+        // 즉시 반영
+        passwordResetTokenRepository.flush()
     }
+
+    // 로그인한 사용자가 비밀번호 변경하는 함수
+    fun changePassword(userId: Long, currentPassword: String, newPassword: String): ResponseMessage {
+        val user = userRepository.findById(userId)
+            .orElseThrow { RuntimeException("사용자를 찾을 수 없습니다.") }
+
+        if (!passwordEncoder.matches(currentPassword, user.password)) {
+            throw IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.")
+        }
+
+        if (passwordEncoder.matches(newPassword, user.password)) {
+            throw IllegalArgumentException("현재 비밀번호와 동일한 비밀번호로 변경할 수 없습니다.")
+        }
+
+        user.password = passwordEncoder.encode(newPassword)
+        userRepository.save(user)
+
+        return ResponseMessage("success", "비밀번호가 성공적으로 변경되었습니다.")
+    }
+
+
+
 }
 
 

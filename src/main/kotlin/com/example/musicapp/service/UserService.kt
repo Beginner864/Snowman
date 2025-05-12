@@ -1,12 +1,10 @@
 package com.example.musicapp.service
 
-import com.example.musicapp.model.ResponseMessage
+
 import com.example.musicapp.model.User
 import com.example.musicapp.repository.UserRepository
 import com.example.musicapp.security.SecurityUtil
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -47,25 +45,22 @@ class UserService @Autowired constructor(
 
 
     // 사용자 이메일로 비밀번호 재설정 링크 전송
-    fun sendPasswordResetLinkToEmail(username: String): ResponseEntity<ResponseMessage> {
+    fun sendPasswordResetLinkToEmail(username: String, email: String): String {
         val user = userRepository.findByUsername(username)
-            ?: return ResponseEntity(
-                ResponseMessage(status = "error", message = "User not found"),
-                HttpStatus.BAD_REQUEST
-            ) // 사용자가 없으면 에러 메시지 반환
+            ?: throw IllegalArgumentException("User not found")
 
-        // 비밀번호 재설정 토큰 생성
+        if (user.email != email) {
+            throw IllegalArgumentException("Email does not match the username")
+        }
+
         val token = passwordResetService.createPasswordResetToken(user)
 
-        // 이메일로 비밀번호 재설정 링크 전송
         emailService.sendPasswordResetEmail(user.email, token)
 
-        // 성공적인 응답을 JSON 형식으로 반환
-        return ResponseEntity(
-            ResponseMessage(status = "success", message = "Password reset link has been sent to your email."),
-            HttpStatus.OK
-        )
+        return "Password reset link has been sent to your email."
     }
+
+
 }
 
 

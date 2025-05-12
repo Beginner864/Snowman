@@ -16,7 +16,7 @@ data class PasswordResetToken(
 
     val token: String,
 
-    val createdDate: LocalDateTime = LocalDateTime.now()  // LocalDateTime으로 변경
+    val createdDate: LocalDateTime = LocalDateTime.now()
 )
 
 

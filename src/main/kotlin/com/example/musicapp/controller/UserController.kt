@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+
 @RestController
 @RequestMapping("/auth")
 class UserController(private val userService: UserService) {
@@ -30,10 +31,18 @@ class UserController(private val userService: UserService) {
     // 비밀번호 찾기 기능
     @PostMapping("/forgot-password")
     fun forgotPassword(@RequestBody findPWRequest: FindPWRequest): ResponseEntity<ResponseMessage> {
-        // 이메일 전송 결과 반환 (ResponseEntity<ResponseMessage> 반환)
-        return userService.sendPasswordResetLinkToEmail(findPWRequest.username)
+        return try {
+            val result = userService.sendPasswordResetLinkToEmail(
+                findPWRequest.username,
+                findPWRequest.email
+            )
+            ResponseEntity.ok(ResponseMessage("success", result))
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.badRequest().body(ResponseMessage("error", e.message ?: "Invalid input"))
+        } catch (e: Exception) {
+            ResponseEntity.internalServerError().body(ResponseMessage("error", "Unexpected error occurred"))
+        }
     }
-
 
 
     // 비밀번호를 ResignRequest 객체로 받음
