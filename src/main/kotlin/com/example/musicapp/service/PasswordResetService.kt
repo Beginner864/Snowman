@@ -6,7 +6,6 @@ import com.example.musicapp.model.User
 import com.example.musicapp.repository.PasswordResetTokenRepository
 import com.example.musicapp.repository.UserRepository
 import org.springframework.scheduling.annotation.Scheduled
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
@@ -53,6 +52,9 @@ class PasswordResetService(
 
         user.password = passwordEncoder.encode(newPassword)
         userRepository.save(user)
+
+        // 사용한 토큰은 즉시 삭제하여 재사용 방지
+        passwordResetTokenRepository.delete(passwordResetToken)
 
         return "Password has been successfully reset."
     }
