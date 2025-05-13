@@ -45,11 +45,18 @@ class PasswordResetService(
             ?: return "Invalid or expired token."
 
         val user = passwordResetToken.user
-        user.password = BCryptPasswordEncoder().encode(newPassword)  // 새로운 비밀번호 암호화
-        userRepository.save(user)  // 비밀번호 업데이트
+
+        // 🔒 새로운 비밀번호가 기존과 같은지 확인
+        if (passwordEncoder.matches(newPassword, user.password)) {
+            return "New password cannot be the same as the current password."
+        }
+
+        user.password = passwordEncoder.encode(newPassword)
+        userRepository.save(user)
 
         return "Password has been successfully reset."
     }
+
 
     // 토큰 유효성 검증
     fun validateResetToken(token: String): PasswordResetToken? {
@@ -103,8 +110,6 @@ class PasswordResetService(
 
         return ResponseMessage("success", "비밀번호가 성공적으로 변경되었습니다.")
     }
-
-
 
 }
 

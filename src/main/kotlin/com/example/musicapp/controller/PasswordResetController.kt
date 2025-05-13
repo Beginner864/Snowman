@@ -18,10 +18,16 @@ class PasswordResetController(
 
     // 비밀번호를 잊었을 때 비밀번호 변경
     @PostMapping("/reset-password")
-    fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<String> {
+    fun resetPassword(@RequestBody request: ResetPasswordRequest): ResponseEntity<ResponseMessage> {
         val result = passwordResetService.resetPassword(request.token, request.newPassword)
-        return ResponseEntity.ok(result)
+
+        return if (result == "Password has been successfully reset.") {
+            ResponseEntity.ok(ResponseMessage("success", result))
+        } else {
+            ResponseEntity.badRequest().body(ResponseMessage("error", result))
+        }
     }
+
 
     // 로그인한 사용자가 비밀번호 변경
     @PostMapping("/change-password")
@@ -36,8 +42,5 @@ class PasswordResetController(
             ResponseEntity.internalServerError().body(ResponseMessage("error", "서버 오류가 발생했습니다."))
         }
     }
-
-
-
 
 }
