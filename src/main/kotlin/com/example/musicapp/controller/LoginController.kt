@@ -3,9 +3,9 @@ package com.example.musicapp.controller
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.musicapp.model.LoginRequest
+import com.example.musicapp.model.ResponseMessage
 import com.example.musicapp.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -25,27 +25,18 @@ class LoginController(
     // 로그인 요청 처리
     @PostMapping("/auth/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<Any> {
-        // 사용자 인증 처리 (DB에서 사용자 확인)
         val user = userRepository.findByUsername(loginRequest.username)
-        if (user != null) {
-            // 비밀번호 암호화된 것과 입력한 비밀번호를 비교
-            if (passwordEncoder.matches(loginRequest.password, user.password)) {
-                // JWT 생성
-                val token = generateJwtToken(loginRequest.username)
 
-                // 로그인 성공 시 JWT 토큰 반환
-                return ResponseEntity.ok(mapOf("token" to token))
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                mapOf("error" to "Invalid password", "message" to "The password you entered is incorrect.")
-            )
+        return if (user != null && passwordEncoder.matches(loginRequest.password, user.password)) {
+            val token = generateJwtToken(loginRequest.username)
+            ResponseEntity.ok(mapOf("status" to "success", "token" to token))
+        } else if (user == null) {
+            ResponseEntity.badRequest().body(ResponseMessage("error", "The user with the provided username does not exist."))
+        } else {
+            ResponseEntity.badRequest().body(ResponseMessage("error", "The password you entered is incorrect."))
         }
-
-        // 사용자명이 존재하지 않으면 로그인 실패
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-            mapOf("error" to "User not found", "message" to "The user with the provided username does not exist.")
-        )
     }
+
 
     // JWT 토큰 생성 함수
     private fun generateJwtToken(username: String): String {
