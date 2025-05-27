@@ -9,15 +9,18 @@ import com.fasterxml.jackson.databind.ObjectMapper
 class GptService {
 
     private val restTemplate = RestTemplate()
-    private val pythonServerUrl = "https://songaii.onrender.com"
+    private val pythonServerUrl = "https://songaii.onrender.com/"
 
     fun requestRecommendation(mood: String, songs: List<Map<String, Any>>): Map<String, Any>? {
-        val url = "$pythonServerUrl/recommend"
+        val url = "${pythonServerUrl}recommend"
 
         val body = mapOf(
             "mood" to mood,
-            "songs" to songs
+            "user_songs" to songs
         )
+
+        println("보낼 곡 데이터: mood=$mood, user_songs=$songs")
+
 
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON

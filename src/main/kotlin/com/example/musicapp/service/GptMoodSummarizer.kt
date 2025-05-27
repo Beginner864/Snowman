@@ -1,15 +1,18 @@
 package com.example.musicapp.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.*
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
-class GptMoodSummarizer {
+class GptMoodSummarizer(
+    @Value("\${openai.api-key}")
+    private val openAiApiKey: String
+) {
 
     private val restTemplate = RestTemplate()
-    private val openAiApiKey = System.getenv("OPENAI_API_KEY")  // 환경 변수로부터 API 키 로드
     private val openAiUrl = "https://api.openai.com/v1/chat/completions"
 
     fun extractKeywordsFromText(input: String): String? {
@@ -41,8 +44,9 @@ class GptMoodSummarizer {
                 json["choices"]?.get(0)?.get("message")?.get("content")?.asText()?.trim()
             } else null
         } catch (e: Exception) {
-            println("GPT 호출 실패: ${e.message}")
+            println("[GptMoodSummarizer] GPT 호출 실패: ${e.message}")
             null
         }
     }
 }
+
