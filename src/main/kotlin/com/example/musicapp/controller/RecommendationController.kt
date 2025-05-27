@@ -6,9 +6,9 @@ import com.example.musicapp.model.SongResponse
 import com.example.musicapp.repository.SongRepository
 import com.example.musicapp.service.GptService
 import com.example.musicapp.service.GptMoodSummarizer
-import com.example.musicapp.model.User
+import com.example.musicapp.repository.UserRepository
+import com.example.musicapp.security.SecurityUtil
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
@@ -17,26 +17,27 @@ import org.springframework.web.server.ResponseStatusException
 class RecommendationController(
     private val songRepository: SongRepository,
     private val gptService: GptService,
-    private val gptMoodSummarizer: GptMoodSummarizer
+    private val gptMoodSummarizer: GptMoodSummarizer,
+    private val userRepository: UserRepository // <- 추가
 ) {
 
     @PostMapping
     fun recommendByMood(
-        @RequestBody request: MoodRequest,
-        @AuthenticationPrincipal user: User?
+        @RequestBody request: MoodRequest
     ): SongResponse {
-        if (user == null) {
-            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.")
+        val userId = SecurityUtil.getCurrentUserId()
+            ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.")
+
+        val user = userRepository.findById(userId).orElseThrow {
+            ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자를 찾을 수 없습니다.")
         }
 
-        val userId = user.id ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 ID가 없습니다.")
         val songs = songRepository.findByUserId(userId)
-
         if (songs.isEmpty()) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자가 저장한 곡이 없습니다.")
         }
 
-        val songRequestList = songs.map {
+        val songRequestList: List<Map<String, Any>> = songs.map {
             mapOf(
                 "id" to it.id,
                 "title" to it.title,
@@ -44,8 +45,9 @@ class RecommendationController(
                 "genre" to it.genre,
                 "mood" to it.mood,
                 "streaming_url" to it.streamingUrl
-            ) as Map<String, Any>
+            ).mapValues { it.value as Any }
         }
+
 
         val moodKeywords = gptMoodSummarizer.extractKeywordsFromText(request.input)
             ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "감정 분석 실패")
@@ -63,6 +65,7 @@ class RecommendationController(
         )
     }
 }
+
 
 
 
