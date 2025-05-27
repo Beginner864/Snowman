@@ -2,9 +2,8 @@ package com.example.musicapp.service
 
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.springframework.http.*
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.beans.factory.annotation.Value
+
 
 @Service
 class GptService {

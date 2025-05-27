@@ -17,7 +17,7 @@ class RecommendationController(
     private val gptService: GptService
 ) {
 
-    // 기분을 정리하는 함수
+    // 기분을 정리하는 함수 (py기반)
     fun normalizeMood(mood: String): String {
         return mood.trim().removeSuffix(".").removeSuffix("!").lowercase() // 마침표 및 느낌표 제거
     }
