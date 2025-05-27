@@ -23,9 +23,14 @@ class RecommendationController(
     @PostMapping
     fun recommendByMood(
         @RequestBody request: MoodRequest,
-        @AuthenticationPrincipal user: User
+        @AuthenticationPrincipal user: User?
     ): SongResponse {
-        val songs = songRepository.findByUserId(user.id!!)
+        if (user == null) {
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.")
+        }
+
+        val userId = user.id ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "사용자 ID가 없습니다.")
+        val songs = songRepository.findByUserId(userId)
 
         if (songs.isEmpty()) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "사용자가 저장한 곡이 없습니다.")
