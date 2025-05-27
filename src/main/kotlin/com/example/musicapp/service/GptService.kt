@@ -11,39 +11,23 @@ class GptService {
 
     private val restTemplate = RestTemplate()
 
-    @Value("\${openai.api-key}")
-    private lateinit var apiKey: String
+    // 추천 서버 주소 (Render 도메인으로 변경)
+    private val pythonServerUrl = "https://songaii.onrender.com"
 
-    fun extractMoodFromText(input: String): String {
-        val url = "https://api.openai.com/v1/chat/completions"
-        val headers = HttpHeaders().apply {
-            contentType = MediaType.APPLICATION_JSON
-            setBearerAuth(apiKey)
-        }
+    fun extractMoodFromText(input: String): Map<String, Any>? {
+        val url = "$pythonServerUrl/recommend?mood=${input.trim()}"
 
-        val requestJson = """
-            {
-              "model": "gpt-3.5-turbo",
-              "messages": [
-                {"role": "system", "content": "당신은 사용자의 기분을 분석하는 도우미입니다."},
-                {"role": "user", "content": "다음 문장에서 기분을 한 단어로 영어로 추출해주세요: \"$input\". 결과는 영어로 한 단어만 출력하세요."}
-              ]
+        return try {
+            val response = restTemplate.getForEntity(url, String::class.java)
+            if (response.statusCode.is2xxSuccessful) {
+                val mapper = ObjectMapper()
+                mapper.readValue(response.body, Map::class.java) as Map<String, Any>
+            } else {
+                null
             }
-        """.trimIndent()
-
-        val request = HttpEntity(requestJson, headers)
-
-        val response = restTemplate.exchange(url, HttpMethod.POST, request, String::class.java)
-        val mapper = ObjectMapper()
-        val rootNode = mapper.readTree(response.body)
-        val mood = rootNode["choices"]
-            .get(0)
-            .get("message")
-            .get("content")
-            .asText()
-            .trim()
-            .lowercase()
-
-        return mood
+        } catch (e: Exception) {
+            println("Python 서버 연결 실패: ${e.message}")
+            null
+        }
     }
 }
